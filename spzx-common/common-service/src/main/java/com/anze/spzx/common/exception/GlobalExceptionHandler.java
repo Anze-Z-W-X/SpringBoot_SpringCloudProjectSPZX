@@ -17,11 +17,11 @@ public class GlobalExceptionHandler {
         return Result.build(null, ResultCodeEnum.SYSTEM_ERROR);
     }
 
-//    //自定义异常处理
-//    @ExceptionHandler(GuiguException.class)
-//    @ResponseBody
-//    public Result error(GuiguException e) {
-//        return Result.build(null, e.getResultCodeEnum());
-//    }
+    //自定义异常处理
+    @ExceptionHandler(AnzeException.class)
+    @ResponseBody
+    public Result error(AnzeException e) {
+        return Result.build(null, e.getResultCodeEnum());
+    }
 
 }

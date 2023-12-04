@@ -1,10 +1,12 @@
 package com.anze.spzx.manager.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.anze.spzx.common.exception.AnzeException;
 import com.anze.spzx.manager.mapper.SysUserMapper;
 import com.anze.spzx.manager.service.SysUserService;
 import com.anze.spzx.model.dto.system.LoginDto;
 import com.anze.spzx.model.entity.system.SysUser;
+import com.anze.spzx.model.vo.common.ResultCodeEnum;
 import com.anze.spzx.model.vo.system.LoginVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +29,15 @@ public class SysUserServiceImpl implements SysUserService {
         //1.根据用户名查询用户
         SysUser sysUser = sysUserMapper.selectByUserName(loginDto.getUserName());
         if(sysUser == null) {
-            throw new RuntimeException("用户名或者密码错误");
+            throw new AnzeException(ResultCodeEnum.LOGIN_ERROR);
+//            throw new RuntimeException("用户名或者密码错误");
         }
         //2.验证密码是否正确
         String inputPassword = loginDto.getPassword();
         String md5InputPassword = DigestUtils.md5DigestAsHex(inputPassword.getBytes());
         if(!md5InputPassword.equals(sysUser.getPassword())) {
-            throw new RuntimeException("用户名或者密码错误") ;
+            throw new AnzeException(ResultCodeEnum.LOGIN_ERROR);
+//            throw new RuntimeException("用户名或者密码错误");
         }
         //3.生成token,保存到redis中
         String token = UUID.randomUUID().toString().replace("-","");
