@@ -1,5 +1,6 @@
 package com.anze.spzx.manager.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.anze.spzx.common.exception.AnzeException;
 import com.anze.spzx.manager.mapper.SysUserMapper;
@@ -26,6 +27,16 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public LoginVo login(LoginDto loginDto) {
+        //校验验证码是否正确
+        String captcha = loginDto.getCaptcha();     // 用户输入的验证码
+        String codeKey = loginDto.getCodeKey();     // redis中验证码的数据key
+        // 从Redis中获取验证码
+        String redisCode = redisTemplate.opsForValue().get("user:login:validatecode:" + codeKey);
+        if(StrUtil.isEmpty(redisCode) || !StrUtil.equalsIgnoreCase(redisCode , captcha)) {
+            throw new AnzeException(ResultCodeEnum.VALIDATECODE_ERROR) ;
+        }
+        // 验证通过删除redis中的验证码
+        redisTemplate.delete("user:login:validatecode:" + codeKey) ;
         //1.根据用户名查询用户
         SysUser sysUser = sysUserMapper.selectByUserName(loginDto.getUserName());
         if(sysUser == null) {
