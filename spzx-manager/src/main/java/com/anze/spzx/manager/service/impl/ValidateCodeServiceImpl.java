@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class ValidateCodeServiceImpl implements ValidateCodeService {
-    private RedisTemplate<String ,String> redisTemplate;
+    private final RedisTemplate<String ,String> redisTemplate;
     @Override
     public ValidateCodeVo generateValidateCode() {
         //使用hutool工具包中的工具类生成验证码
