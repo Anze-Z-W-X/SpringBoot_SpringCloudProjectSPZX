@@ -57,24 +57,20 @@ public class LoginAuthInterceptor implements HandlerInterceptor {
         return true ;
     }
 
-    //响应208状态码给前端
+    //响应408状态码给前端
     private void responseNoLoginInfo(HttpServletResponse response) {
         Result<Object> result = Result.build(null, ResultCodeEnum.LOGIN_AUTH);
-        PrintWriter writer = null;
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/html; charset=utf-8");
-        try {
-            writer = response.getWriter();
+        try (PrintWriter writer = response.getWriter()) {
             writer.print(JSON.toJSONString(result));
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (writer != null) writer.close();
         }
     }
 
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+    public void afterCompletion(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler, Exception ex) throws Exception {
         AuthContextUtil.remove();  // 移除threadLocal中的数据
     }
 }
