@@ -4,6 +4,7 @@ import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.CircleCaptcha;
 import com.anze.spzx.manager.service.ValidateCodeService;
 import com.anze.spzx.model.vo.system.ValidateCodeVo;
+import com.anze.spzx.utils.RedisCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class ValidateCodeServiceImpl implements ValidateCodeService {
-    private final RedisTemplate<String ,String> redisTemplate;
+    private final RedisCache redisCache;
     @Override
     public ValidateCodeVo generateValidateCode() {
         //使用hutool工具包中的工具类生成验证码
@@ -26,7 +27,7 @@ public class ValidateCodeServiceImpl implements ValidateCodeService {
         String codeKey = UUID.randomUUID().toString().replace("-", "");
 
         // 将验证码存储到Redis中
-        redisTemplate.opsForValue().set("user:login:validatecode:" + codeKey , codeVal , 5 , TimeUnit.MINUTES);
+        redisCache.setCacheObject("user:login:validatecode:" + codeKey , codeVal , 5 , TimeUnit.MINUTES);
 
         // 构建响应结果数据
         ValidateCodeVo validateCodeVo = new ValidateCodeVo() ;

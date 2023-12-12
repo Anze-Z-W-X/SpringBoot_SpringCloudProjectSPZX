@@ -4,15 +4,18 @@ import com.anze.spzx.manager.interceptor.LoginAuthInterceptor;
 import com.anze.spzx.manager.properties.UserAuthProperties;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Component
+@Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
-    @Autowired
-    private LoginAuthInterceptor loginAuthInterceptor;
+    //不能通过@Autowired注入，因为这样会导致拦截器在启动前便加载，无法实例化
+//    @Autowired
+//    private LoginAuthInterceptor loginAuthInterceptor;
 
     @Autowired
     private UserAuthProperties userAuthProperties;
@@ -25,9 +28,14 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
                 .allowedHeaders("*") ;                // 允许所有的请求头
     }
 
+    @Bean
+    public LoginAuthInterceptor getLoginAuthInterceptor(){
+        return new LoginAuthInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loginAuthInterceptor)
+        registry.addInterceptor(getLoginAuthInterceptor())
                 .excludePathPatterns(userAuthProperties.getNoAuthUrls())
                 .addPathPatterns("/**");
     }

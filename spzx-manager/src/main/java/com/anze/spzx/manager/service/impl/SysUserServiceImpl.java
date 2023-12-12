@@ -9,6 +9,7 @@ import com.anze.spzx.model.dto.system.LoginDto;
 import com.anze.spzx.model.entity.system.SysUser;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
 import com.anze.spzx.model.vo.system.LoginVo;
+import com.anze.spzx.utils.RedisCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class SysUserServiceImpl implements SysUserService {
     private final SysUserMapper sysUserMapper;
 
-    private final RedisTemplate<String ,String> redisTemplate;
+    private final RedisCache redisCache;
 
     @Override
     public LoginVo login(LoginDto loginDto) {
@@ -32,12 +33,12 @@ public class SysUserServiceImpl implements SysUserService {
         String captcha = loginDto.getCaptcha();     // 用户输入的验证码
         String codeKey = loginDto.getCodeKey();     // redis中验证码的数据key
         // 从Redis中获取验证码
-        String redisCode = redisTemplate.opsForValue().get("user:login:validatecode:" + codeKey);
+        String redisCode = redisCache.getCacheObject("user:login:validatecode:" + codeKey);
         if(StrUtil.isEmpty(redisCode) || !StrUtil.equalsIgnoreCase(redisCode , captcha)) {
             throw new AnzeException(ResultCodeEnum.VALIDATECODE_ERROR) ;
         }
         // 验证通过删除redis中的验证码
-        redisTemplate.delete("user:login:validatecode:" + codeKey) ;
+        redisCache.deleteObject("user:login:validatecode:" + codeKey) ;
         //1.根据用户名查询用户
         SysUser sysUser = sysUserMapper.selectByUserName(loginDto.getUserName());
         if(sysUser == null) {
@@ -53,8 +54,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         //3.生成token,保存到redis中
         String token = UUID.randomUUID().toString().replace("-","");
-        redisTemplate.opsForValue().set("user:login:"+token, JSON.toJSONString(sysUser),30, TimeUnit.MINUTES);
-
+        redisCache.setCacheObject("user:login:"+token, JSON.toJSONString(sysUser),30, TimeUnit.MINUTES);
         //4.构建响应结果对象
         LoginVo loginVo = new LoginVo() ;
         loginVo.setToken(token);
@@ -64,12 +64,12 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public SysUser getUserInfo(String token) {
-        String userJson = redisTemplate.opsForValue().get("user:login:"+token);
+        String userJson = redisCache.getCacheObject("user:login:"+token);
         return JSON.parseObject(userJson,SysUser.class);
     }
 
     @Override
     public void logout(String token) {
-        redisTemplate.delete("user:login:" + token);
+        redisCache.deleteObject("user:login:" + token);
     }
 }
