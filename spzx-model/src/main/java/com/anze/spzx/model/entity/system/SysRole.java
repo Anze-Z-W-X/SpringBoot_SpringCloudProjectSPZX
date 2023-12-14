@@ -4,10 +4,13 @@ import com.anze.spzx.model.entity.base.BaseEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
+
 @Data
 @Schema(description = "SysRole")
 public class SysRole extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     @Schema(description = "角色名称")

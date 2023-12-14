@@ -5,5 +5,7 @@ import com.anze.spzx.model.entity.system.SysRole;
 import com.github.pagehelper.PageInfo;
 
 public interface SysRoleService {
-    public abstract PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer pageNum, Integer pageSize);
+    PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer pageNum, Integer pageSize);
+
+    void saveSysRole(SysRole sysRole);
 }
