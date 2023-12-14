@@ -17,9 +17,9 @@ public class SysRoleController {
     private SysRoleService sysRoleService ;
 
     @PostMapping("/findByPage/{pageNum}/{pageSize}")
-    public Result<PageInfo<SysRole>> findByPage(@RequestBody SysRoleDto sysRoleDto ,
-                                                @PathVariable(value = "pageNum") Integer pageNum ,
-                                                @PathVariable(value = "pageSize") Integer pageSize) {
+    public Result<PageInfo<SysRole>> findByPage(@PathVariable(value = "pageNum") Integer pageNum ,
+                                                @PathVariable(value = "pageSize") Integer pageSize,
+                                                @RequestBody SysRoleDto sysRoleDto) {
         PageInfo<SysRole> pageInfo = sysRoleService.findByPage(sysRoleDto , pageNum , pageSize) ;
         return Result.build(pageInfo , ResultCodeEnum.SUCCESS) ;
     }
