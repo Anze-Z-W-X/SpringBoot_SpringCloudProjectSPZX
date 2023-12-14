@@ -31,4 +31,16 @@ public class SysRoleController {
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 
+    @PutMapping("/updateSysRole")
+    public Result updateSysRole(@RequestBody SysRole sysRole){
+        sysRoleService.updateSysRole(sysRole);
+        return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
+    @DeleteMapping("/deleteById/{roleId}")
+    public Result deleteById(@PathVariable("roleId")Long roleId){
+        sysRoleService.delById(roleId);
+        return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
 }
