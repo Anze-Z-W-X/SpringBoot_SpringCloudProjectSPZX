@@ -42,7 +42,6 @@
                  )
     </insert>
 
-
     <update id="update">
         update sys_role set
         <if test="roleName != null and roleName != ''">
