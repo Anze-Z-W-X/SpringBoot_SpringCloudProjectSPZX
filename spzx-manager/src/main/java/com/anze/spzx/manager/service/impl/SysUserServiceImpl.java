@@ -6,10 +6,13 @@ import com.anze.spzx.common.exception.AnzeException;
 import com.anze.spzx.manager.mapper.SysUserMapper;
 import com.anze.spzx.manager.service.SysUserService;
 import com.anze.spzx.model.dto.system.LoginDto;
+import com.anze.spzx.model.dto.system.SysUserDto;
 import com.anze.spzx.model.entity.system.SysUser;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
 import com.anze.spzx.model.vo.system.LoginVo;
 import com.anze.spzx.utils.RedisCache;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -71,5 +75,44 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void logout(String token) {
         redisCache.deleteObject("user:login:" + token);
+    }
+
+    @Override
+    public PageInfo<SysUser> findByPage(Integer pageNum, Integer pageSize, SysUserDto sysUserDto) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<SysUser> list = sysUserMapper.findByPage(sysUserDto);
+        PageInfo<SysUser> pageInfo = new PageInfo<>(list);
+        return pageInfo;
+    }
+
+    @Override
+    public void saveSysUser(SysUser sysUser) {
+        //1.判断用户名不能重复
+        String userName = sysUser.getUserName();
+        SysUser dbSysUser = sysUserMapper.selectByUserName(userName);
+        if(dbSysUser!=null){
+            throw new AnzeException(ResultCodeEnum.USER_NAME_IS_EXISTS);
+        }
+        //2.输入密码加密
+        String password = sysUser.getPassword();
+        String md5_password = DigestUtils.md5DigestAsHex(password.getBytes());
+        sysUser.setPassword(md5_password);
+        sysUserMapper.save(sysUser);
+    }
+
+    @Override
+    public void updateSysUser(SysUser sysUser) {
+        //1.判断用户名不能重复
+        String userName = sysUser.getUserName();
+        SysUser dbSysUser = sysUserMapper.selectByUserName(userName);
+        if(dbSysUser!=null){
+            throw new AnzeException(ResultCodeEnum.USER_NAME_IS_EXISTS);
+        }
+        sysUserMapper.update(sysUser);
+    }
+
+    @Override
+    public void deleteById(Long userId) {
+        sysUserMapper.delete(userId);
     }
 }
