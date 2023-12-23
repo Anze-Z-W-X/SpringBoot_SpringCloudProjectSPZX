@@ -55,10 +55,12 @@
             </el-form-item>
             <el-form-item label="头像">
                 <el-upload
-                        class="avatar-uploader"
-                        action="http://localhost:8501/admin/system/fileUpload"
-                        :show-file-list="false"
-                        >
+                    class="avatar-uploader"
+                    action="http://localhost:8501/admin/system/fileUpload"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :headers="headers"
+                >
                     <img v-if="sysUser.avatar" :src="sysUser.avatar" class="avatar" />
                     <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
                 </el-upload>
@@ -116,6 +118,17 @@ import { ref, onMounted } from 'vue';
 import {GetSysUserListByPage,SaveSysUser,UpdateSysUser,DeleteById} from '@/api/sysUser.js';
 import { ElMessage,ElMessageBox } from "element-plus";
 
+///////////////////////用户头像上传
+import { useApp } from '@/pinia/modules/app'
+
+const headers = {
+  token: useApp().authorization.token     // 从pinia中获取token，在进行文件上传的时候将token设置到请求头中
+}
+
+// 图像上传成功以后的事件处理函数
+const handleAvatarSuccess = (response, uploadFile) => {
+    sysUser.value.avatar = response.data
+}
 ///////////////////////用户删除
 const deleteById = (row) => {
     ElMessageBox.confirm('此操作将永久删除该记录, 是否继续?', 'Warning', {
@@ -130,7 +143,7 @@ const deleteById = (row) => {
        }
     })
 }
-///////////////////////用户添加
+///////////////////////用户添加与更改
 const dialogVisible = ref(false)
 // 定义提交表单数据模型
 const defaultForm = {
