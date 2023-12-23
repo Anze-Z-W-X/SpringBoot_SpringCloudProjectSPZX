@@ -72,6 +72,9 @@
         <if test="status != null and status != ''">
             status = #{status},
         </if>
+        <if test="avatar != null and avatar != ''">
+            avatar = #{avatar},
+        </if>
         update_time =  now()
         where
         id = #{id}
