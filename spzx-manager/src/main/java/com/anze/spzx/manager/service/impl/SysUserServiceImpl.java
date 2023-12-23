@@ -105,12 +105,6 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Override
     public void updateSysUser(SysUser sysUser) {
-        //1.判断用户名不能重复
-        String userName = sysUser.getUserName();
-        SysUser dbSysUser = sysUserMapper.selectByUserName(userName);
-        if(dbSysUser!=null){
-            throw new AnzeException(ResultCodeEnum.USER_NAME_IS_EXISTS);
-        }
         sysUserMapper.update(sysUser);
     }
 

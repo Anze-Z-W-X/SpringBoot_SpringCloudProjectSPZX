@@ -15,6 +15,9 @@ spring:
     redis:
       host: 192.168.164.129
       port: 6379
+  servlet:
+    multipart:
+      max-file-size: 5MB
 #  password: 1234
 
 # mybatis的配置
@@ -23,6 +26,11 @@ mybatis:
   mapper-locations: classpath:/mapper/*/*.xml
 
 spzx:
+  minio:
+    endpointUrl: http://192.168.164.129:9001
+    accessKey: admin
+    secreKey: admin123456
+    bucketName: spzx-bucket
   auth:
     noAuthUrls:
       - /admin/system/index/login
