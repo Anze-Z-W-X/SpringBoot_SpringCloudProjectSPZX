@@ -1,5 +1,6 @@
 package com.anze.spzx.manager.service;
 
+import com.anze.spzx.model.dto.system.AssginRoleDto;
 import com.anze.spzx.model.dto.system.LoginDto;
 import com.anze.spzx.model.dto.system.SysUserDto;
 import com.anze.spzx.model.entity.system.SysUser;
@@ -20,4 +21,6 @@ public interface SysUserService {
     void updateSysUser(SysUser sysUser);
 
     void deleteById(Long userId);
+
+    void doAssign(AssginRoleDto assginRoleDto);
 }

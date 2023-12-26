@@ -18,12 +18,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.anze</groupId>
-            <artifactId>spzx-model</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
             <version>8.5.2</version>

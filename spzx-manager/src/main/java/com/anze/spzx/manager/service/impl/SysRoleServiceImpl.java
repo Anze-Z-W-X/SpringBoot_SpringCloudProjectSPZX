@@ -9,7 +9,9 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // 接口实现类
 @Service
@@ -39,5 +41,16 @@ public class SysRoleServiceImpl implements SysRoleService {
     @Override
     public void delById(Long roleId) {
         sysRoleMapper.delete(roleId);
+    }
+
+    @Override
+    public Map<String, Object> findAll() {
+        //1.查询所有角色
+        List<SysRole> roleList = sysRoleMapper.findAll();
+        //TODO 2.分配过的角色列表
+
+        HashMap<String , Object> map = new HashMap<>();
+        map.put("allRoleList",roleList);
+        return map;
     }
 }
