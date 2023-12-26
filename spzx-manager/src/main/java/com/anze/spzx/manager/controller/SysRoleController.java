@@ -9,12 +9,21 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/admin/system/sysRole")
 public class SysRoleController {
 
     @Autowired
     private SysRoleService sysRoleService ;
+
+    //查询所有角色
+    @GetMapping("/findAllRoles")
+    public Result findAllRoles(){
+        Map<String ,Object> map = sysRoleService.findAll();
+        return Result.build(map,ResultCodeEnum.SUCCESS);
+    }
 
     @PostMapping("/findByPage/{pageNum}/{pageSize}")
     public Result<PageInfo<SysRole>> findByPage(@PathVariable(value = "pageNum") Integer pageNum ,
