@@ -3,8 +3,10 @@ package com.anze.spzx.manager.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.anze.spzx.common.exception.AnzeException;
+import com.anze.spzx.manager.mapper.SysRoleUserMapper;
 import com.anze.spzx.manager.mapper.SysUserMapper;
 import com.anze.spzx.manager.service.SysUserService;
+import com.anze.spzx.model.dto.system.AssginRoleDto;
 import com.anze.spzx.model.dto.system.LoginDto;
 import com.anze.spzx.model.dto.system.SysUserDto;
 import com.anze.spzx.model.entity.system.SysUser;
@@ -28,6 +30,8 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor//只会给有final修饰的变量加构造函数,同时依赖注入
 public class SysUserServiceImpl implements SysUserService {
     private final SysUserMapper sysUserMapper;
+
+    private final SysRoleUserMapper sysRoleUserMapper;
 
     private final RedisCache redisCache;
 
@@ -111,5 +115,16 @@ public class SysUserServiceImpl implements SysUserService {
     @Override
     public void deleteById(Long userId) {
         sysUserMapper.delete(userId);
+    }
+
+    @Override
+    public void doAssign(AssginRoleDto assginRoleDto) {
+        //1.根据userId删除用户之前分配的角色数据
+        sysRoleUserMapper.deleteByUserId(assginRoleDto.getUserId());
+        //2.重新分配新关系
+        List<Long> roleIdList = assginRoleDto.getRoleIdList();
+        roleIdList.forEach(roleId ->{
+            sysRoleUserMapper.doAssign(assginRoleDto.getUserId(),roleId);
+        });
     }
 }

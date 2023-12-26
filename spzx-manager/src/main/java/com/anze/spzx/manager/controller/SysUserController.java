@@ -2,6 +2,7 @@ package com.anze.spzx.manager.controller;
 
 import com.anze.spzx.manager.service.SysUserService;
 import com.anze.spzx.model.dto.system.SysUserDto;
+import com.anze.spzx.model.dto.system.AssginRoleDto;
 import com.anze.spzx.model.entity.system.SysUser;
 import com.anze.spzx.model.vo.common.Result;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
@@ -41,6 +42,13 @@ public class SysUserController {
     @DeleteMapping("/deleteById/{userId}")
     public Result DELETEbYiD(@PathVariable("userId")Long userId){
         sysUserService.deleteById(userId);
+        return Result.build(null,ResultCodeEnum.SUCCESS);
+    }
+
+    //5.用户分配角色
+    @PostMapping("/doAssign")
+    public Result doAssign(@RequestBody AssginRoleDto assginRoleDto){
+        sysUserService.doAssign(assginRoleDto);
         return Result.build(null,ResultCodeEnum.SUCCESS);
     }
 }
