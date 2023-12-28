@@ -1,6 +1,7 @@
 package com.anze.spzx.manager.service.impl;
 
 import com.anze.spzx.manager.mapper.SysRoleMapper;
+import com.anze.spzx.manager.mapper.SysRoleUserMapper;
 import com.anze.spzx.manager.service.SysRoleService;
 import com.anze.spzx.model.dto.system.SysRoleDto;
 import com.anze.spzx.model.entity.system.SysRole;
@@ -19,6 +20,8 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Autowired
     private SysRoleMapper sysRoleMapper ;
+    @Autowired
+    private SysRoleUserMapper sysRoleUserMapper;
 
     @Override
     public PageInfo<SysRole> findByPage(SysRoleDto sysRoleDto, Integer pageNum, Integer pageSize) {
@@ -44,13 +47,15 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public Map<String, Object> findAll() {
+    public Map<String, Object> findAll(Long userId) {
         //1.查询所有角色
         List<SysRole> roleList = sysRoleMapper.findAll();
-        //TODO 2.分配过的角色列表
-
+        //2.分配过的角色列表
+        //根据userId查询用户分配过的角色id列表
+        List<Long> roleIds = sysRoleUserMapper.selectRoleIdsByUserId(userId);
         HashMap<String , Object> map = new HashMap<>();
         map.put("allRoleList",roleList);
+        map.put("sysUserRoles",roleIds);
         return map;
     }
 }
