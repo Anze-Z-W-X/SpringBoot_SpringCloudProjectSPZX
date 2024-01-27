@@ -1,10 +1,12 @@
 package com.anze.spzx.manager.controller;
 
+import com.anze.spzx.manager.service.SysMenuService;
 import com.anze.spzx.manager.service.SysUserService;
 import com.anze.spzx.manager.service.ValidateCodeService;
 import com.anze.spzx.model.dto.system.LoginDto;
 import com.anze.spzx.model.entity.system.SysUser;
 import com.anze.spzx.model.vo.common.Result;
+import com.anze.spzx.model.vo.system.*;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
 import com.anze.spzx.model.vo.system.LoginVo;
 import com.anze.spzx.model.vo.system.ValidateCodeVo;
@@ -13,6 +15,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "用户接口")
 @RestController
@@ -23,6 +27,16 @@ public class IndexController {
 
     @Autowired
     private ValidateCodeService validateCodeService;
+
+    @Autowired
+    private SysMenuService sysMenuService;
+
+    //查询用户可以操作的菜单
+    @GetMapping("/menus")
+    public Result menus(){
+        List<SysMenuVo> list = sysMenuService.findMenusByUserId();
+        return Result.build(list,ResultCodeEnum.SUCCESS);
+    }
 
     @Operation(summary = "登录接口")
     @PostMapping("/login")

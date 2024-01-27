@@ -4,12 +4,17 @@ import com.anze.spzx.common.exception.AnzeException;
 import com.anze.spzx.manager.mapper.SysMenuMapper;
 import com.anze.spzx.manager.service.SysMenuService;
 import com.anze.spzx.model.entity.system.SysMenu;
+import com.anze.spzx.model.entity.system.SysUser;
+import com.anze.spzx.model.utils.BeanCopyUtil;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
+import com.anze.spzx.model.vo.system.SysMenuVo;
+import com.anze.spzx.utils.AuthContextUtil;
 import com.anze.spzx.utils.MenuHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.util.LinkedList;
 import java.util.List;
 
 @Service
@@ -47,5 +52,34 @@ public class SysMenuServiceImpl implements SysMenuService {
         }
 
         sysMenuMapper.removeById(id);
+    }
+
+    @Override
+    public List<SysMenuVo> findMenusByUserId() {
+        //获取当前用户id
+        SysUser sysUser = AuthContextUtil.get();
+        Long userId = sysUser.getId();
+        //根据userId获取菜单
+        List<SysMenu> syMenuList = sysMenuMapper.findMenusByUserId(userId);
+        //封装要求数据格式
+        List<SysMenu> sysMenuList = MenuHelper.buildTree(syMenuList);
+        List<SysMenuVo> sysMenuVos = buildMenus(sysMenuList);
+        return sysMenuVos;
+    }
+    // 将List<SysMenu>对象转换成List<SysMenuVo>对象
+    private List<SysMenuVo> buildMenus(List<SysMenu> menus) {
+
+        List<SysMenuVo> sysMenuVoList = new LinkedList<SysMenuVo>();
+        for (SysMenu sysMenu : menus) {
+            SysMenuVo sysMenuVo = new SysMenuVo();
+            sysMenuVo.setTitle(sysMenu.getTitle());
+            sysMenuVo.setName(sysMenu.getComponent());
+            List<SysMenu> children = sysMenu.getChildren();
+            if (!CollectionUtils.isEmpty(children)) {
+                sysMenuVo.setChildren(buildMenus(children));
+            }
+            sysMenuVoList.add(sysMenuVo);
+        }
+        return sysMenuVoList;
     }
 }
