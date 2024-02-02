@@ -11,6 +11,9 @@
             (#{roleId} , #{menuInfo.id} , now() , now() , 0 , #{menuInfo.isHalf})
         </foreach>
     </insert>
+    <select id="updateSysRoleMenuIsHalf">
+        update sys_role_menu srm set srm.is_half = 1 where menu_id = #{id}
+    </select>
     <delete id="deleteByRoleId">
         delete from sys_role_menu where role_id = #{roleId}
     </delete>

@@ -2,6 +2,7 @@ package com.anze.spzx.manager.service.impl;
 
 import com.anze.spzx.common.exception.AnzeException;
 import com.anze.spzx.manager.mapper.SysMenuMapper;
+import com.anze.spzx.manager.mapper.SysRoleMenuMapper;
 import com.anze.spzx.manager.service.SysMenuService;
 import com.anze.spzx.model.entity.system.SysMenu;
 import com.anze.spzx.model.entity.system.SysUser;
@@ -21,6 +22,9 @@ import java.util.List;
 public class SysMenuServiceImpl implements SysMenuService {
     @Autowired
     private SysMenuMapper sysMenuMapper;
+
+    @Autowired
+    private SysRoleMenuMapper sysRoleMenuMapper;
     @Override
     public List<SysMenu> findNodes() {
         //1.先查询所有的菜单，返回list
@@ -36,6 +40,23 @@ public class SysMenuServiceImpl implements SysMenuService {
     @Override
     public void save(SysMenu sysMenu) {
         sysMenuMapper.save(sysMenu);
+        // 新添加一个菜单，那么此时就需要将该菜单所对应的父级菜单设置为半开
+        updateSysRoleMenuIsHalf(sysMenu) ;
+    }
+
+    private void updateSysRoleMenuIsHalf(SysMenu sysMenu) {
+        // 查询是否存在父节点
+        SysMenu parentMenu = sysMenuMapper.selectById(sysMenu.getParentId());
+
+        if (parentMenu != null) {
+
+            // 将该id的菜单设置为半开
+            sysRoleMenuMapper.updateSysRoleMenuIsHalf(parentMenu.getId());
+
+            // 递归调用
+            updateSysRoleMenuIsHalf(parentMenu);
+
+        }
     }
 
     @Override

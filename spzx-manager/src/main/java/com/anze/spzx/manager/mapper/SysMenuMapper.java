@@ -18,4 +18,6 @@ public interface SysMenuMapper {
     void removeById(Long id);
 
     List<SysMenu> findMenusByUserId(Long userId);
+
+    SysMenu selectById(Long id);
 }
