@@ -1,4 +1,4 @@
-<template>
+<template >
     <div class="search-div">
         <!-- 搜索表单 -->
         <el-form label-width="70px" size="small">
