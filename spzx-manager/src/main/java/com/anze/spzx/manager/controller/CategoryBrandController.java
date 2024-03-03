@@ -2,12 +2,15 @@ package com.anze.spzx.manager.controller;
 
 import com.anze.spzx.manager.service.CategoryBrandService;
 import com.anze.spzx.model.dto.product.CategoryBrandDto;
+import com.anze.spzx.model.entity.product.Brand;
 import com.anze.spzx.model.entity.product.CategoryBrand;
 import com.anze.spzx.model.vo.common.Result;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/admin/product/categoryBrand")
@@ -38,5 +41,11 @@ public class CategoryBrandController {
     public Result deleteById(@PathVariable Long id) {
         categoryBrandService.deleteById(id);
         return Result.build(null , ResultCodeEnum.SUCCESS) ;
+    }
+
+    @GetMapping("/findBrandByCategoryId/{categoryId}")
+    public Result findBrandByCategoryId(@PathVariable Long categoryId) {
+        List<Brand> brandList =   categoryBrandService.findBrandByCategoryId(categoryId);
+        return Result.build(brandList , ResultCodeEnum.SUCCESS) ;
     }
 }

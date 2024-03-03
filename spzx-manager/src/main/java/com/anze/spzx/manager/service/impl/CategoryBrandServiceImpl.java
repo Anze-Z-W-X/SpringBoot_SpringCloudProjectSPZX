@@ -3,6 +3,7 @@ package com.anze.spzx.manager.service.impl;
 import com.anze.spzx.manager.mapper.CategoryBrandMapper;
 import com.anze.spzx.manager.service.CategoryBrandService;
 import com.anze.spzx.model.dto.product.CategoryBrandDto;
+import com.anze.spzx.model.entity.product.Brand;
 import com.anze.spzx.model.entity.product.CategoryBrand;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -37,6 +38,11 @@ public class CategoryBrandServiceImpl implements CategoryBrandService {
     @Override
     public void deleteById(Long id) {
         categoryBrandMapper.deleteById(id) ;
+    }
+
+    @Override
+    public List<Brand> findBrandByCategoryId(Long categoryId) {
+        return categoryBrandMapper.findBrandByCategoryId(categoryId);
     }
 
 }
