@@ -1,5 +1,7 @@
 package com.anze.spzx.manager.controller;
 
+import com.anze.spzx.common.log.annotation.Log;
+import com.anze.spzx.common.log.enums.OperatorType;
 import com.anze.spzx.manager.service.BrandService;
 import com.anze.spzx.model.entity.product.Brand;
 import com.anze.spzx.model.vo.common.Result;
@@ -18,6 +20,7 @@ public class BrandController {
     private BrandService brandService ;
 
     //列表
+    @Log(title = "品牌管理:列表",businessType = 0,operatorType = OperatorType.OTHER)
     @GetMapping("/{page}/{limit}")
     public Result findByPage(@PathVariable Integer page, @PathVariable Integer limit) {
         PageInfo<Brand> pageInfo = brandService.findByPage(page, limit);

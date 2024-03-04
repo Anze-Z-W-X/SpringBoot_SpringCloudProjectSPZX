@@ -23,7 +23,9 @@ public class OrderStatisticsTask {
 
     @Scheduled(cron = "0 0 2 * * ?")
     public void orderTotalAmountStatistics() {
+        //获取前一天日期
         String createTime = DateUtil.offsetDay(new Date(), -1).toString(new SimpleDateFormat("yyyy-MM-dd"));
+        //查询前一天交易金额
         OrderStatistics orderStatistics = orderInfoMapper.selectOrderStatistics(createTime);
         if(orderStatistics != null) {
             orderStatisticsMapper.insert(orderStatistics) ;

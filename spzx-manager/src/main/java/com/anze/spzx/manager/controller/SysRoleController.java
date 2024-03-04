@@ -1,5 +1,6 @@
 package com.anze.spzx.manager.controller;
 
+import com.anze.spzx.common.log.annotation.Log;
 import com.anze.spzx.manager.service.SysRoleService;
 import com.anze.spzx.model.dto.system.SysRoleDto;
 import com.anze.spzx.model.entity.system.SysRole;
@@ -34,6 +35,7 @@ public class SysRoleController {
     }
 
     //角色添加方法
+    @Log(title = "角色添加",businessType = 1) //添加Log注解，设置属性
     @PostMapping("/saveSysRole")
     public Result saveSysRole(@RequestBody SysRole sysRole){
         sysRoleService.saveSysRole(sysRole);

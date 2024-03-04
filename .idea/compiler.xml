@@ -9,13 +9,19 @@
         <outputRelativeToContentRoot value="true" />
         <module name="spzx-model" />
         <module name="common-util" />
+        <module name="common-log" />
         <module name="common-service" />
         <module name="spzx-manager" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common-log (1) (com.example)" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="common-log" options="-parameters" />
+      <module name="common-log (1) (com.example)" options="-parameters" />
       <module name="common-service" options="-parameters" />
       <module name="common-util" options="-parameters" />
       <module name="spzx-manager" options="-parameters" />

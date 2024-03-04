@@ -3,19 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>spzx-parent</artifactId>
+        <artifactId>spzx-common</artifactId>
         <groupId>com.anze</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>spzx-common</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>common-util</module>
-        <module>common-service</module>
-        <module>common-log</module>
-    </modules>
+    <artifactId>common-log</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -23,15 +17,22 @@
     </properties>
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>com.anze</groupId>
-            <artifactId>spzx-model</artifactId>
+            <artifactId>common-util</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.5.2</version>
         </dependency>
     </dependencies>
 
