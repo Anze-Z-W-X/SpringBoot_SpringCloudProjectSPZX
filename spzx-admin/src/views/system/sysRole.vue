@@ -172,7 +172,7 @@ const roleForm = {
 }
 const sysRole = ref(roleForm)
 //弹框设置，true弹出框
-const dialogVisible = ref(false)
+let dialogVisible = ref(false)
 
 //弹出框数据回显
 const editShow = (row)=>{
