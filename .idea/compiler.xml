@@ -9,10 +9,10 @@
         <outputRelativeToContentRoot value="true" />
         <module name="spzx-model" />
         <module name="common-util" />
+        <module name="common-log" />
         <module name="common-service" />
         <module name="service-product" />
         <module name="spzx-manager" />
-        <module name="common-log" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
