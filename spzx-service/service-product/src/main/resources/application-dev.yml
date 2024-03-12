@@ -14,6 +14,10 @@ spring:
     url: jdbc:mysql://192.168.164.129:3306/db_spzx?characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: 123
+  data:
+    redis:
+      host: 192.168.164.129
+      port: 6379
 
 mybatis:
   config-location: classpath:mybatis-config.xml
