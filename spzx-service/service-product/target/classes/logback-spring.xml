@@ -44,8 +44,8 @@
 
     <!-- 开发环境 -->
     <springProfile name="dev">
-        <!-- com.atguigu日志记录器：业务程序INFO级别  -->
-        <logger name="com.atguigu" level="INFO" />
+        <!-- com.anze日志记录器：业务程序INFO级别  -->
+        <logger name="com.anze" level="INFO" />
         <!-- 根日志记录器：INFO级别  -->
         <root level="INFO">
             <appender-ref ref="CONSOLE" />

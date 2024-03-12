@@ -8,4 +8,5 @@ public interface CategoryService {
 
     List<Category> findOneCategory();
 
+    List<Category> findCategoryTree();
 }

@@ -1,12 +1,9 @@
 package com.anze.spzx.product.controller;
 
 import com.anze.spzx.model.entity.product.Category;
-import com.anze.spzx.model.entity.product.ProductSku;
 import com.anze.spzx.model.vo.common.Result;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
-import com.anze.spzx.model.vo.h5.IndexVo;
 import com.anze.spzx.product.service.CategoryService;
-import com.anze.spzx.product.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,28 +14,21 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Tag(name = "首页接口管理")
+@Tag(name = "分类接口管理")
 @RestController
-@RequestMapping(value="/api/product/index")
-@CrossOrigin
+@RequestMapping(value="/api/product/category")
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class IndexController {
+@CrossOrigin
+public class CategoryController {
 
     @Autowired
     private CategoryService categoryService;
 
-    @Autowired
-    private ProductService productService;
-
-    @Operation(summary = "获取首页数据")
-    @GetMapping
-    public Result<IndexVo> findData(){
-        List<Category> categoryList = categoryService.findOneCategory();
-        List<ProductSku> productSkuList = productService.findProductSkuBySale();
-        IndexVo indexVo = new IndexVo() ;
-        indexVo.setCategoryList(categoryList);
-        indexVo.setProductSkuList(productSkuList);
-        return Result.build(indexVo , ResultCodeEnum.SUCCESS);
+    @Operation(summary = "获取分类树形数据")
+    @GetMapping("findCategoryTree")
+    public Result<List<Category>> findCategoryTree(){
+        List<Category> list = categoryService.findCategoryTree();
+        return Result.build(list,  ResultCodeEnum.SUCCESS);
     }
 
 }
