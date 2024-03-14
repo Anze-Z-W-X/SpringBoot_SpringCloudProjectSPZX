@@ -1,17 +1,24 @@
 package com.anze.spzx.user.service.impl;
 
+import cn.hutool.core.lang.UUID;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.anze.spzx.common.exception.AnzeException;
+import com.anze.spzx.model.dto.h5.UserLoginDto;
 import com.anze.spzx.model.dto.h5.UserRegisterDto;
 import com.anze.spzx.model.entity.user.UserInfo;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
+import com.anze.spzx.model.vo.h5.UserInfoVo;
 import com.anze.spzx.user.mapper.UserInfoMapper;
 import com.anze.spzx.user.service.UserInfoService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.DigestUtils;
+
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
@@ -64,5 +71,49 @@ public class UserInfoServiceImpl implements UserInfoService {
 
         // 删除Redis中的数据
         redisTemplate.delete("phone:code:" + username) ;
+    }
+
+    @Override
+    public String login(UserLoginDto userLoginDto) {
+        String username = userLoginDto.getUsername();
+        String password = userLoginDto.getPassword();
+
+        //校验参数
+        if(StringUtils.isEmpty(username) ||
+                StringUtils.isEmpty(password)) {
+            throw new AnzeException(ResultCodeEnum.DATA_ERROR);
+        }
+
+        UserInfo userInfo = userInfoMapper.getByUsername(username);
+        if(null == userInfo) {
+            throw new AnzeException(ResultCodeEnum.LOGIN_ERROR);
+        }
+
+        //校验密码
+        String md5InputPassword = DigestUtils.md5DigestAsHex(password.getBytes());
+        if(!md5InputPassword.equals(userInfo.getPassword())) {
+            throw new AnzeException(ResultCodeEnum.LOGIN_ERROR);
+        }
+
+        //校验是否被禁用
+        if(userInfo.getStatus() == 0) {
+            throw new AnzeException(ResultCodeEnum.ACCOUNT_STOP);
+        }
+
+        String token = UUID.randomUUID().toString().replaceAll("-", "");
+        redisTemplate.opsForValue().set("user:spzx:" + token, JSON.toJSONString(userInfo), 30, TimeUnit.DAYS);
+        return token;
+    }
+
+    @Override
+    public UserInfoVo getCurrentUserInfo(String token) {
+        String userInfoJSON = redisTemplate.opsForValue().get("user:spzx:" + token);
+        if(StringUtils.isEmpty(userInfoJSON)) {
+            throw new AnzeException(ResultCodeEnum.LOGIN_AUTH) ;
+        }
+        UserInfo userInfo = JSON.parseObject(userInfoJSON , UserInfo.class) ;
+        UserInfoVo userInfoVo = new UserInfoVo();
+        BeanUtils.copyProperties(userInfo, userInfoVo);
+        return userInfoVo ;
     }
 }
