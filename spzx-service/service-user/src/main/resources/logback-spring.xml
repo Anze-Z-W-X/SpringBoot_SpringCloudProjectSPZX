@@ -4,7 +4,7 @@
     <contextName>logback</contextName>
 
     <!-- 日志的输出目录 -->
-    <property name="log.path" value="D://logs//spzx-manager//logs" />
+    <property name="log.path" value="D://logs//service-user//logs" />
 
     <!--控制台日志格式：彩色日志-->
     <!-- magenta:洋红 -->
@@ -44,7 +44,7 @@
 
     <!-- 开发环境 -->
     <springProfile name="dev">
-        <!-- com.atguigu日志记录器：业务程序INFO级别  -->
+        <!-- com.anze日志记录器：业务程序INFO级别  -->
         <logger name="com.anze" level="INFO" />
         <!-- 根日志记录器：INFO级别  -->
         <root level="INFO">
