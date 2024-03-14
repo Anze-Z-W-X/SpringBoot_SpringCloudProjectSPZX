@@ -4,6 +4,7 @@ import com.anze.spzx.model.dto.h5.ProductSkuDto;
 import com.anze.spzx.model.entity.product.ProductSku;
 import com.anze.spzx.model.vo.common.Result;
 import com.anze.spzx.model.vo.common.ResultCodeEnum;
+import com.anze.spzx.model.vo.h5.ProductItemVo;
 import com.anze.spzx.product.service.ProductService;
 import com.github.pagehelper.PageInfo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,6 +32,13 @@ public class ProductController {
                                                    @Parameter(name = "productSkuDto", description = "搜索条件对象", required = false) ProductSkuDto productSkuDto) {
         PageInfo<ProductSku> pageInfo = productService.findByPage(page, limit, productSkuDto);
         return Result.build(pageInfo , ResultCodeEnum.SUCCESS) ;
+    }
+
+    @Operation(summary = "商品详情")
+    @GetMapping("item/{skuId}")
+    public Result<ProductItemVo> item(@Parameter(name = "skuId", description = "商品skuId", required = true) @PathVariable Long skuId) {
+        ProductItemVo productItemVo = productService.item(skuId);
+        return Result.build(productItemVo , ResultCodeEnum.SUCCESS);
     }
 
 }
