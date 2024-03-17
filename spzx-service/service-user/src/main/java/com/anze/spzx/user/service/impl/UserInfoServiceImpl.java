@@ -4,6 +4,7 @@ import cn.hutool.core.lang.UUID;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.anze.spzx.common.exception.AnzeException;
+import com.anze.spzx.common.util.AuthContextUtil;
 import com.anze.spzx.model.dto.h5.UserLoginDto;
 import com.anze.spzx.model.dto.h5.UserRegisterDto;
 import com.anze.spzx.model.entity.user.UserInfo;
@@ -11,6 +12,7 @@ import com.anze.spzx.model.vo.common.ResultCodeEnum;
 import com.anze.spzx.model.vo.h5.UserInfoVo;
 import com.anze.spzx.user.mapper.UserInfoMapper;
 import com.anze.spzx.user.service.UserInfoService;
+import jakarta.annotation.Resource;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -26,7 +28,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Autowired
     private UserInfoMapper userInfoMapper;
 
-    @Autowired
+    @Resource
     private RedisTemplate<String , String> redisTemplate;
 
     @Transactional(rollbackFor = Exception.class)
@@ -107,11 +109,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public UserInfoVo getCurrentUserInfo(String token) {
-        String userInfoJSON = redisTemplate.opsForValue().get("user:spzx:" + token);
-        if(StringUtils.isEmpty(userInfoJSON)) {
-            throw new AnzeException(ResultCodeEnum.LOGIN_AUTH) ;
-        }
-        UserInfo userInfo = JSON.parseObject(userInfoJSON , UserInfo.class) ;
+        UserInfo userInfo = AuthContextUtil.getUserInfo();
         UserInfoVo userInfoVo = new UserInfoVo();
         BeanUtils.copyProperties(userInfo, userInfoVo);
         return userInfoVo ;
