@@ -1,6 +1,10 @@
 server:
   port: 8500
 spring:
+  data:
+    redis:
+      host: 192.168.164.129
+      port: 6379
   application:
     name: spzx-server-gateway
   cloud:
@@ -22,6 +26,10 @@ spring:
             # 跨域检测的有效期,单位s
             maxAge: 36000
       routes:
+        - id: service-user
+          uri: lb://service-user
+          predicates:
+              - Path=/*/user/**
         - id: service-product
           uri: lb://service-product
           predicates:
