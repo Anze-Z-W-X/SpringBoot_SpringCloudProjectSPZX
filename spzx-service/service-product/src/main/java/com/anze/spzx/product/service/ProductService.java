@@ -1,6 +1,7 @@
 package com.anze.spzx.product.service;
 
 import com.anze.spzx.model.dto.h5.ProductSkuDto;
+import com.anze.spzx.model.dto.product.SkuSaleDto;
 import com.anze.spzx.model.entity.product.ProductSku;
 import com.anze.spzx.model.vo.h5.ProductItemVo;
 import com.github.pagehelper.PageInfo;
@@ -16,4 +17,6 @@ public interface ProductService {
     ProductItemVo item(Long skuId);
 
     ProductSku getBySkuId(Long skuId);
+
+    Boolean updateSkuSaleNum(List<SkuSaleDto> skuSaleDtoList);
 }
