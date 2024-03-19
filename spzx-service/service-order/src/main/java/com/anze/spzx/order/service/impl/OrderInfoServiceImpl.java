@@ -19,6 +19,8 @@ import com.anze.spzx.order.mapper.OrderInfoMapper;
 import com.anze.spzx.order.mapper.OrderItemMapper;
 import com.anze.spzx.order.mapper.OrderLogMapper;
 import com.anze.spzx.order.service.OrderInfoService;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,6 +149,48 @@ public class OrderInfoServiceImpl implements OrderInfoService {
         //远程调用service-cart微服务接口清空购物车数据
         cartFeignClient.deleteChecked() ;
         return orderInfo.getId();
+    }
+
+    @Override
+    public OrderInfo getOrderInfo(Long orderId) {
+        return orderInfoMapper.getById(orderId);
+    }
+
+    @Override
+    public TradeVo buy(Long skuId) {
+        // 查询商品
+        ProductSku productSku = productFeignClient.getBySkuId(skuId);
+        List<OrderItem> orderItemList = new ArrayList<>();
+        OrderItem orderItem = new OrderItem();
+        orderItem.setSkuId(skuId);
+        orderItem.setSkuName(productSku.getSkuName());
+        orderItem.setSkuNum(1);
+        orderItem.setSkuPrice(productSku.getSalePrice());
+        orderItem.setThumbImg(productSku.getThumbImg());
+        orderItemList.add(orderItem);
+
+        // 计算总金额
+        BigDecimal totalAmount = productSku.getSalePrice();
+        TradeVo tradeVo = new TradeVo();
+        tradeVo.setTotalAmount(totalAmount);
+        tradeVo.setOrderItemList(orderItemList);
+
+        // 返回
+        return tradeVo;
+    }
+
+    @Override
+    public PageInfo<OrderInfo> findUserPage(Integer page, Integer limit, Integer orderStatus) {
+        PageHelper.startPage(page, limit);
+        Long userId = AuthContextUtil.getUserInfo().getId();
+        List<OrderInfo> orderInfoList = orderInfoMapper.findUserPage(userId, orderStatus);
+
+        orderInfoList.forEach(orderInfo -> {
+            List<OrderItem> orderItem = orderItemMapper.findByOrderId(orderInfo.getId());
+            orderInfo.setOrderItemList(orderItem);
+        });
+
+        return new PageInfo<>(orderInfoList);
     }
 
 }
